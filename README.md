@@ -1,4 +1,5 @@
 this is a test project
 
 //////////////////////////////////////////////////////////////////////
-express, knex, postgres, react chatApp
+express, knex, postgres, react
+MERN chatApp
