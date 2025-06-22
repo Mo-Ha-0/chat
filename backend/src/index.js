@@ -1,9 +1,6 @@
-// import express from 'express';
-// import authRouter from './routes/auth.route.js';
-require('dotenv').config();
-
 const express = require('express');
 const authRouter = require('./routes/auth.route.js');
+require('dotenv').config('');
 
 const app = express();
 
@@ -13,5 +10,5 @@ app.use('/api/auth', authRouter);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log(`app is listening on port ${PORT}`);
+  console.log(`app is listening on port: ${PORT}`);
 });
