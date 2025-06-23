@@ -1,8 +1,10 @@
-const { validationResult } = require('express-validator');
+const { validationResult, check } = require('express-validator');
 const bcrypt = require('bcrypt');
 const userService = require('../services/userService');
 require('dotenv').config('');
 const jwt = require('jsonwebtoken');
+
+const cloudinary = require('../lib/cloudinary');
 
 module.exports = {
   async signup(req, res) {
@@ -85,7 +87,7 @@ module.exports = {
 
       res.cookie('jwt', token, {
         httpOnly: true,
-        maxAge: 3600000, // 1 hour in milliseconds
+        maxAge: 1000 * 60 * 60, // 1 hour in milliseconds
         sameSite: 'strict',
         secure: process.env.NODE_ENV !== 'development',
       });
@@ -99,12 +101,44 @@ module.exports = {
     }
   },
 
-  async logout(req, res) {
+  logout(req, res) {
     try {
       res.clearCookie('jwt');
       return res
         .status(200)
         .json({ loggedIn: false, message: 'Logged out Succesfully' });
+    } catch (error) {
+      return res.status(400).json({ errors: error.message });
+    }
+  },
+
+  async updateProfile(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+      const { profilePic } = req.body;
+      const userId = req.user.id;
+
+      const uploadResponse = await cloudinary.uploader.upload(
+        profilePic
+      );
+
+      const updatedUser = await userService.updateUser(userId, {
+        profilePic: uploadResponse.secure_url,
+      });
+
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      console.error(error);
+      return res.status(400).json({ errors: error.message });
+    }
+  },
+
+  checkAuth(req, res) {
+    try {
+      res.status(200).json(req.user);
     } catch (error) {
       return res.status(400).json({ errors: error.message });
     }

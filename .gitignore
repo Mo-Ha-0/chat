@@ -27,3 +27,4 @@ Thumbs.db
 .prettierrc
 
 frontend/.gitignore
+pics/
