@@ -28,3 +28,4 @@ Thumbs.db
 
 frontend/.gitignore
 pics/
+frontend/dist
