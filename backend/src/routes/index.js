@@ -6,7 +6,7 @@ const usersRouter = require('./users.route');
 const router = express.Router();
 
 router.use('/auth', authRouter);
-router.use('/message', messageRouter);
+router.use('/messages', messageRouter);
 router.use('/users', usersRouter);
 
 module.exports = router;

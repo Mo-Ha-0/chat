@@ -12,19 +12,23 @@ const Message = {
 
   // جلب الرسائل بين مرسل ومستقبل
   getMessagesBetween: async (senderId, receiverId) => {
+    if (!senderId || !receiverId) {
+      throw new Error('senderId or receiverId is missing');
+    }
     return await db('messages')
       .where(function () {
-        this.where({
-          sender_id: senderId,
-          receiver_id: receiverId,
-        }).orWhere({
-          sender_id: receiverId,
-          receiver_id: senderId,
-        });
+        this.where('sender_id', senderId).andWhere(
+          'receiver_id',
+          receiverId
+        );
       })
-      .orderBy('created_at', 'asc');
+      .orWhere(function () {
+        this.where('sender_id', receiverId).andWhere(
+          'receiver_id',
+          senderId
+        );
+      });
   },
-
   // جلب رسالة واحدة
   getMessageById: async (id) => {
     return await db('messages').where({ id }).first();

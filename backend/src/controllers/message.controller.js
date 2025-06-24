@@ -4,9 +4,10 @@ const cloudinary = require('cloudinary').v2;
 module.exports = {
   async getMessages(req, res) {
     try {
-      const { id: userToChatId } = req.params;
+      const userToChatId = req.params.id;
       const myId = req.user.id;
 
+      console.log(userToChatId);
       const messages = await MessageService.getConversation(
         myId,
         userToChatId

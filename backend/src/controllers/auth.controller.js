@@ -10,7 +10,7 @@ module.exports = {
   async signup(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ message: errors.array() });
     }
 
     const { password, ...userData } = req.body;
@@ -22,7 +22,7 @@ module.exports = {
         console.error('Username already exists');
         return res
           .status(400)
-          .json({ loggedIn: false, status: 'User taken' });
+          .json({ loggedIn: false, message: 'User taken' });
       }
       const SALT = 11;
       const password_hash = await bcrypt.hash(password, SALT);
@@ -53,14 +53,16 @@ module.exports = {
       res.status(201).json(userInfo, token);
       return user.id;
     } catch (error) {
-      res.status(400).json({ error: error.message, msg: 'bad data' });
+      res
+        .status(400)
+        .json({ error: error.message, message: 'bad data' });
     }
   },
 
   async login(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ message: errors.array() });
     }
     const { password, ...userData } = req.body;
     try {
@@ -70,14 +72,14 @@ module.exports = {
         console.error('User not found');
         return res
           .status(404)
-          .json({ loggedIn: false, status: 'User not found' });
+          .json({ loggedIn: false, message: 'Wrong credentials' });
       }
       const isValidPassword = await bcrypt.compare(
         password,
         user.password_hash
       );
       if (!isValidPassword) {
-        return res.status(400).json('Wrong credentials');
+        return res.status(400).json({ message: 'Wrong credentials' });
       }
 
       const userID = user.id;
@@ -97,7 +99,7 @@ module.exports = {
       res.status(201).json(userInfo, token);
       return user.id;
     } catch (error) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ message: errors.array() });
     }
   },
 
@@ -108,14 +110,14 @@ module.exports = {
         .status(200)
         .json({ loggedIn: false, message: 'Logged out Succesfully' });
     } catch (error) {
-      return res.status(400).json({ errors: error.message });
+      return res.status(400).json({ message: error.message });
     }
   },
 
   async updateProfile(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ message: errors.array() });
     }
     try {
       const { profilePic } = req.body;
@@ -132,7 +134,7 @@ module.exports = {
       res.status(200).json(updatedUser);
     } catch (error) {
       console.error(error);
-      return res.status(400).json({ errors: error.message });
+      return res.status(400).json({ message: error.message });
     }
   },
 
@@ -140,7 +142,7 @@ module.exports = {
     try {
       res.status(200).json(req.user);
     } catch (error) {
-      return res.status(400).json({ errors: error.message });
+      return res.status(400).json({ message: error.message });
     }
   },
 };
