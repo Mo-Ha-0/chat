@@ -1,3 +1,4 @@
+const { getRecieverSocketId, io } = require('../../config/socket');
 const MessageService = require('../services/messageService');
 const cloudinary = require('cloudinary').v2;
 
@@ -43,7 +44,10 @@ module.exports = {
         image: imageUrl,
       });
 
-      //   TODO: real time functionality => sockcet.io
+      const recieverSocketId = getRecieverSocketId(receiverId);
+      if (recieverSocketId) {
+        io.to(recieverSocketId).emit('newMessage', newMessage);
+      }
 
       res.status(201).json(newMessage);
     } catch (error) {

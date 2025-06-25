@@ -10,7 +10,8 @@ module.exports = {
   async signup(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ message: errors.array() });
+      console.error({ message: errors.array() });
+      return res.status(400).json({ message: errors.array()[0].msg });
     }
 
     const { password, ...userData } = req.body;
@@ -62,7 +63,7 @@ module.exports = {
   async login(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ message: errors.array() });
+      return res.status(400).json({ message: errors.array()[0].msg });
     }
     const { password, ...userData } = req.body;
     try {

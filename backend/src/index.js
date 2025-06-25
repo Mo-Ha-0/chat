@@ -2,9 +2,8 @@ const express = require('express');
 const Router = require('./routes');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const { app, server } = require('../config/socket');
 require('dotenv').config('');
-
-const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
@@ -18,6 +17,6 @@ app.use(
 app.use('/api', Router);
 
 const PORT = process.env.PORT;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`app is listening on port: ${PORT}`);
 });
